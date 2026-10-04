@@ -1,0 +1,176 @@
+<!DOCTYPE html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>শ্রান্তি বিনোদন ছুটি ক্যালকুলেটর</title>
+<style>
+
+* { box-sizing: border-box; margin: 0px; padding: 0px; font-family: SolaimanLipi, Kalpurush, Arial, sans-serif; }
+
+body { background: linear-gradient(135deg, rgb(238, 242, 243) 0%, rgb(142, 158, 171) 100%); color: rgb(51, 51, 51); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+
+.calculator-card { background: rgb(255, 255, 255); padding: 35px 30px; border-radius: 16px; box-shadow: rgba(0, 0, 0, 0.12) 0px 10px 30px; width: 100%; max-width: 1000px; }
+
+.header-section { text-align: center; margin-bottom: 25px; }
+
+h1 { font-size: 24px; color: rgb(26, 37, 47); margin-bottom: 6px; }
+
+p.subtitle { font-size: 14px; color: rgb(102, 102, 102); }
+
+.calc-grid { display: grid; grid-template-columns: 1fr; gap: 25px; }
+
+.input-group { margin-bottom: 15px; text-align: left; }
+
+label { display: block; font-weight: bold; margin-bottom: 6px; color: rgb(44, 62, 80); font-size: 14px; }
+
+input[type="text"], input[type="date"] { width: 100%; padding: 12px; border: 1px solid rgb(204, 204, 204); border-radius: 8px; font-size: 15px; outline: none; transition: 0.3s; background-color: rgb(255, 255, 255); cursor: pointer; }
+
+input[type="text"]:focus, input[type="date"]:focus { border-color: rgb(211, 84, 0); box-shadow: rgba(211, 84, 0, 0.3) 0px 0px 5px; }
+
+.btn-unused { width: 100%; background: linear-gradient(135deg, rgb(211, 84, 0), rgb(160, 64, 0)); color: rgb(255, 255, 255); border-width: medium; border-style: none; border-color: currentcolor; border-image: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; margin-top: 10px; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 10px; }
+
+.btn-submit:hover { transform: translateY(-2px); box-shadow: rgba(0, 0, 0, 0.15) 0px 6px 15px; }
+
+.result-card { background: rgb(253, 254, 254); border-width: 1px 1px 1px 6px; border-style: solid; border-color: rgb(224, 224, 224) rgb(224, 224, 224) rgb(224, 224, 224) rgb(211, 84, 0); border-image: none; border-radius: 12px; padding: 20px; text-align: left; display: none; }
+
+.result-card h3 { color: rgb(160, 64, 0); font-size: 18px; margin-bottom: 15px; border-bottom: 1px solid rgb(238, 238, 238); padding-bottom: 8px; }
+
+.result-item { font-size: 15px; margin-bottom: 12px; color: rgb(52, 73, 94); line-height: 1.5; }
+
+.result-item strong { color: rgb(26, 37, 47); }
+
+.section-divider { font-weight: bold; color: rgb(211, 84, 0); margin: 15px 0px 10px; border-top: 1px dashed rgb(204, 204, 204); padding-top: 10px; font-size: 16px; }
+
+.author-box { margin-top: 25px; padding: 15px; background-color: rgb(244, 248, 251); border: 1px solid rgb(225, 232, 237); border-radius: 10px; text-align: center; line-height: 1.6; }
+
+.author-title { color: rgb(11, 83, 69); font-weight: bold; font-size: 18px; }
+
+.author-name { color: rgb(44, 62, 80); font-size: 18px; }
+
+.author-details { color: rgb(52, 73, 94); font-size: 15px; }
+
+.author-mobile { color: rgb(11, 83, 69); font-weight: bold; font-size: 16px; margin-top: 4px; }
+
+.btn-home-old { display: inline-block; margin-top: 20px; text-decoration: none; color: rgb(0, 140, 186); font-weight: bold; font-size: 14px; }
+
+.btn-home:hover { text-decoration: underline; }
+
+@media (min-width:768px) and (hover:hover) and (pointer:fine) {
+  .header-section { grid-column: span 2; }
+  .calc-grid { grid-template-columns: 1fr 1fr; align-items: start; }
+  .full-width-footer { grid-column: span 2; text-align: center; }
+}
+.top-bar{display:flex;margin-bottom:15px}
+.btn-home{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#e2e8f0;color:#334155;text-decoration:none;font-size:15px;font-weight:600;border-radius:8px;transition:.3s}
+.btn-home:hover{background:#d35400;color:#fff;transform:translateY(-2px)}
+.f{display:block;margin-bottom:15px;padding:8px 12px;border:1px solid #ccc;border-radius:8px;background:#fff;cursor:text}
+.f .l{display:block;font-size:14px;font-weight:700;color:#2c3e50}
+.f input{width:100%;border:0;padding:3px 0;font-size:18px;outline:0;background:transparent}
+.f:focus-within{border-color:#d35400;box-shadow:0 0 5px rgba(211,84,0,.3)}
+.err{color:#c0392b;font-weight:700;margin-bottom:10px}
+.result-card.show{display:block}
+.warn{color:#c0392b}
+.hint{font-size:13px;color:#666;margin-top:6px;line-height:1.5}
+
+.sub{display:block;font-size:13px;color:#c0392b}
+.notes{margin:20px 0 0;padding-left:20px;font-size:13px;color:#666;line-height:1.7;text-align:left}
+:root{--cal:#d35400}
+.cal-pop{position:absolute;z-index:1000;width:300px;background:#fff;border:1px solid #d9dde2;border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.22);padding:12px;font-size:15px;color:#333;text-align:left}
+.cal-hd{display:flex;gap:4px;align-items:center;margin-bottom:8px}
+.cal-hd button{flex:none;width:28px;height:30px;border:0;border-radius:6px;background:#f1f3f5;cursor:pointer;font-size:16px;color:#333}
+.cal-hd button:hover{background:#e3e7ea}
+.cal-hd select{flex:1;min-width:0;height:30px;border:1px solid #ccc;border-radius:6px;font-size:14px;background:#fff;padding:0 2px;cursor:pointer;color:#333}
+.cal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.cal-g b{font-size:12px;color:#888;padding:4px 0}
+.cal-g button{height:34px;border:0;border-radius:6px;background:none;cursor:pointer;font-size:15px;color:#222}
+.cal-g button:hover{background:#eef1f4}
+.cal-g .tod{box-shadow:inset 0 0 0 1px var(--cal)}
+.cal-g .sel,.cal-g .sel:hover{background:var(--cal);color:#fff}
+.cal-ft{display:flex;justify-content:space-between;margin-top:8px;border-top:1px solid #eee;padding-top:6px}
+.cal-ft button{border:0;background:none;color:var(--cal);font-size:14px;font-weight:700;cursor:pointer;padding:4px 8px}
+</style></head><body><div class="calculator-card">
+<div class="top-bar"><a href="https://manik-rmch.github.io/dashboard" class="btn-home"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3 2 12h3v8h5v-6h4v6h5v-8h3z"/></svg> হোম</a></div>
+<div class="header-section"><h1>শ্রান্তি বিনোদন ছুটি ক্যালকুলেটর</h1><p class="subtitle">প্রতি ৩ বছর অন্তর ছুটি ও ভাতার প্রাপ্যতার তারিখ, অবসর পর্যন্ত</p></div>
+<div class="calc-grid"><div class="form-panel"><label class="f"><span class="l">জন্মতারিখ:</span><input type="text" id="dob" inputmode="numeric" autocomplete="off" placeholder="dd/mm/yyyy"></label><label class="f"><span class="l">চাকরিতে প্রথম যোগদানের তারিখ:</span><input type="text" id="join" inputmode="numeric" autocomplete="off" placeholder="dd/mm/yyyy"></label><label class="f"><span class="l">সর্বশেষ ছুটির প্রাপ্যতার তারিখ (ঐচ্ছিক):</span><input type="text" id="last" inputmode="numeric" autocomplete="off" placeholder="dd/mm/yyyy"></label><p class="err" id="msg"></p></div>
+<div class="result-panel"><div class="result-card" id="resultBox"><h3>📊 ছুটির হিসাবের ফলাফল</h3><div id="outputContent"></div></div></div>
+<div class="full-width-footer"><ul class="notes"><li>হিসাব ধরে নেয় প্রতিবার সময়মতো আবেদন করা হবে। দেরিতে আবেদন করলে পরের সব তারিখ সরে যাবে।</li><li>অবসরের তারিখ ৫৯ বছর পূর্ণ হওয়ার আগের দিন ধরা হয়েছে। সঠিক তারিখ দপ্তর থেকে নিশ্চিত করুন।</li><li>প্রতিবার গড় বেতনে ছুটির প্রাপ্যতা থাকতে হবে। এটি সহায়ক হিসাব, আবেদনের আগে হিসাবরক্ষণ অফিস থেকে নিশ্চিত হোন।</li></ul><div class="author-box"><span class="author-title">প্রস্তুতকারক:</span> <span class="author-name">মোঃ মানিক</span><br><div class="author-details">গাড়ি চালক, রাজশাহী মেডিকেল কলেজ হাসপাতাল, রাজশাহী।</div><div class="author-mobile">মোবাইল: ০১৭২৯-৮১৫২৯১</div></div></div></div></div><script>var BN="০১২৩৪৫৬৭৮৯",MN=["জানুয়ারি","ফেব্রুয়ারি","মার্চ","এপ্রিল","মে","জুন","জুলাই","আগস্ট","সেপ্টেম্বর","অক্টোবর","নভেম্বর","ডিসেম্বর"],BADD="সঠিক তারিখ দিন, যেমন ০৭/০৫/২০২৫";
+function $(i){return document.getElementById(i)}
+function bn(n){return String(n).replace(/\d/g,function(d){return BN[d]})}
+function en(s){return s.replace(/[০-৯]/g,function(c){return BN.indexOf(c)})}
+function grp(n){var s=String(n),l=s.slice(-3),r=s.slice(0,-3);return bn(r?r.replace(/\B(?=(\d{2})+(?!\d))/g,",")+","+l:l)}
+function dim(y,m){return new Date(y,m+1,0).getDate()}
+function setV(el,v){el.value=v;el._p=v}
+function maskEl(el,L,S){var pv=el._p||"",nv=en(el.value),c=el.selectionStart,T=L.reduce(function(a,b){return a+b}),z=function(x){return x==="_"||/\d/.test(x)},i,t,k=0,n=0,q=0,raw,pos,o="",p=0,s;
+if(c==null)c=nv.length;var re=Math.max(0,pv.length-(nv.length-c)),a=0;
+while(a<c&&a<re&&pv[a]===nv[a])a++;
+var ins=nv.slice(a,c).replace(/\D/g,""),rem=re-a,del=!ins&&rem>0;
+if(del){if(!/\d/.test(pv.slice(a,re))){i=a-1;while(i>=0&&!/\d/.test(pv[i]))i--;if(i>=0){a=i;re=i+1}else re=a}
+if(re>a){raw=/[0-9_]/.test(pv.slice(re))?pv.slice(0,a)+pv.slice(a,re).replace(/\d/g,"_")+pv.slice(re):pv.slice(0,a)+pv.slice(re)}else raw=pv;pos=a}
+else if(ins){t=a;while(t<pv.length&&!z(pv[t]))t++;var full=(pv.match(/\d/g)||[]).length>=T&&pv.indexOf("_")<0;
+if(rem===0&&ins.length===1&&t<pv.length&&(pv[t]==="_"||full)){raw=pv.slice(0,t)+ins+pv.slice(t+1);pos=t+1}else{raw=pv.slice(0,a)+ins+pv.slice(re);pos=a+ins.length}}
+else{raw=nv;pos=c}
+var v=raw.replace(/[^0-9_]/g,"").slice(0,T).replace(/_+$/,"");
+for(i=0;i<Math.min(pos,raw.length);i++)if(z(raw[i]))k++;
+for(i=0;i<L.length;i++){s=v.slice(p,p+L[i]);if(!s)break;o+=s;p+=L[i];if(s.length===L[i]&&i<L.length-1&&(p<v.length||!del))o+=S[i]}
+for(;q<o.length&&n<k;q++)if(z(o[q]))n++;
+if(!del)while(q<o.length&&!z(o[q])&&k>0)q++;
+setV(el,o);try{el.setSelectionRange(q,q)}catch(e){}}
+function D(s){var m=/^(\d\d)\/(\d\d)\/(\d{4})$/.exec(s);if(!m)return(s.length<10||s.indexOf("_")>=0)?null:false;var d=+m[1],o=+m[2]-1,y=+m[3];return(y<1900||y>2100||o>11||d<1||d>dim(y,o))?false:{y:y,m:o,d:d}}
+function fmtD(o){return bn(o.d)+" "+MN[o.m]+" "+bn(o.y)}
+function two(n){return("0"+n).slice(-2)}
+function dstr(o){return two(o.d)+"/"+two(o.m+1)+"/"+o.y}
+function today(){var t=new Date();return{y:t.getFullYear(),m:t.getMonth(),d:t.getDate()}}
+function days(a,b){return Math.round((Date.UTC(b.y,b.m,b.d)-Date.UTC(a.y,a.m,a.d))/864e5)}
+function ymd(a,b){var y=b.y-a.y,m=b.m-a.m,d=b.d-a.d;if(d<0){m--;d+=b.m?dim(b.y,b.m-1):31}if(m<0){y--;m+=12}return{y:y,m:m,d:d}}
+function onDate(id,fn){var el=$(id);el.addEventListener("input",function(){maskEl(el,[2,2,4],["/","/"]);if(fn)fn()})}
+function boxClick(){document.querySelectorAll(".f").forEach(function(b){b.addEventListener("click",function(e){var i=b.querySelector("input");if(i&&e.target!==i&&e.target.tagName!=="BUTTON")i.focus()})})}
+
+function addY(o,n){return{y:o.y+n,m:o.m,d:Math.min(o.d,dim(o.y+n,o.m))}}
+function addM(o,n){var t=o.m+n,y=o.y+Math.floor(t/12),m=((t%12)+12)%12;return{y:y,m:m,d:Math.min(o.d,dim(y,m))}}
+function prev(o){var t=new Date(o.y,o.m,o.d-1);return{y:t.getFullYear(),m:t.getMonth(),d:t.getDate()}}
+function key(o){return o.y*10000+o.m*100+o.d}
+function item(l,v){return'<div class="result-item"><strong>'+l+':</strong> '+v+'</div>'}
+function run(){var box=$("resultBox"),m=$("msg"),b=D($("dob").value),j=D($("join").value),ls=D($("last").value);box.classList.remove("show");m.textContent="";
+if(b===false||j===false||ls===false){m.textContent=BADD;return}if(!b||!j)return;
+if($("last").value&&ls===null){m.textContent="সর্বশেষ ছুটির তারিখ পুরো লিখুন, অথবা ঘরটি ফাঁকা রাখুন।";return}
+if(key(j)<key(addY(b,18))){m.textContent="যোগদানের তারিখ জন্মতারিখ থেকে কমপক্ষে ১৮ বছর পরে হতে হবে।";return}
+if(ls&&key(ls)<key(j)){m.textContent="সর্বশেষ ছুটির তারিখ যোগদানের তারিখের আগে হতে পারে না।";return}
+var ret=prev(addY(b,59)),base=ls||j,rows=[],i,dt;
+for(i=1;;i++){dt=addY(base,3*i);if(key(dt)>key(ret))break;rows.push(dt)}
+var h=item("অবসরের তারিখ",fmtD(ret))+item("প্রাপ্য ছুটি",bn(rows.length)+"টি");
+if(rows.length){h+='<div class="section-divider">প্রাপ্যতার তারিখসমূহ</div>';
+rows.forEach(function(r,i){h+='<div class="result-item"><strong>'+bn(i+1)+' নম্বর ছুটি:</strong> '+fmtD(r)+'</div>'})}
+else h+=item("মন্তব্য","অবসরের আগে আর কোনো ছুটি প্রাপ্য হচ্ছে না");
+$("outputContent").innerHTML=h;box.classList.add("show")}
+["dob","join","last"].forEach(function(i){onDate(i,run)});boxClick();run();
+window.attachCal=function(){};
+(function(){
+if(!window.matchMedia||!matchMedia("(hover:hover) and (pointer:fine)").matches)return;
+var WD=["শনি","রবি","সোম","মঙ্গল","বুধ","বৃহ","শুক্র"],pop,cur,vy,vm,LO=1930,HI=2100;
+function render(){var t=today(),s=D(cur.value),i,h='<div class="cal-hd"><button type="button" data-a="py" title="গত বছর">«</button><button type="button" data-a="pm" title="গত মাস">‹</button><select data-a="m">';
+for(i=0;i<12;i++)h+='<option value="'+i+'"'+(i===vm?" selected":"")+">"+MN[i]+"</option>";
+h+='</select><select data-a="y">';for(i=LO;i<=HI;i++)h+='<option value="'+i+'"'+(i===vy?" selected":"")+">"+bn(i)+"</option>";
+h+='</select><button type="button" data-a="nm" title="পরের মাস">›</button><button type="button" data-a="ny" title="পরের বছর">»</button></div><div class="cal-g">';
+WD.forEach(function(w){h+="<b>"+w+"</b>"});
+var off=(new Date(vy,vm,1).getDay()+1)%7,n=dim(vy,vm);
+for(i=0;i<off;i++)h+="<span></span>";
+for(i=1;i<=n;i++){var c=(s&&s.y===vy&&s.m===vm&&s.d===i?" sel":"")+(t.y===vy&&t.m===vm&&t.d===i?" tod":"");h+='<button type="button" data-d="'+i+'" class="'+c+'">'+bn(i)+"</button>"}
+pop.innerHTML=h+'</div><div class="cal-ft"><button type="button" data-a="t">আজ</button><button type="button" data-a="x">মুছুন</button></div>'}
+function close(){if(pop)pop.style.display="none";cur=null}
+function pick(o){var el=cur;setV(el,o?dstr(o):"");el.dispatchEvent(new Event("input",{bubbles:true}));close()}
+function go(d){var t=vy*12+vm+d,y=Math.floor(t/12);if(y<LO||y>HI)return;vy=y;vm=t-y*12}
+function build(){pop=document.createElement("div");pop.className="cal-pop";pop.style.display="none";
+pop.addEventListener("mousedown",function(e){if(!/SELECT|OPTION/.test(e.target.tagName))e.preventDefault()});
+pop.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var a=b.dataset.a;if(b.dataset.d)return pick({y:vy,m:vm,d:+b.dataset.d});
+if(a==="py")vy=Math.max(LO,vy-1);else if(a==="ny")vy=Math.min(HI,vy+1);else if(a==="pm")go(-1);else if(a==="nm")go(1);else if(a==="t")return pick(today());else if(a==="x")return pick(null);render()});
+pop.addEventListener("change",function(e){var a=e.target.dataset.a;if(a==="m")vm=+e.target.value;if(a==="y")vy=+e.target.value;render()});
+document.body.appendChild(pop);
+document.addEventListener("mousedown",function(e){if(!cur)return;var bx=cur.closest(".f")||cur;if(!pop.contains(e.target)&&!bx.contains(e.target))close()});
+document.addEventListener("keydown",function(e){if(cur&&(e.key==="Escape"||e.key==="Tab"))close()})}
+function open(el){if(!pop)build();cur=el;var s=D(el.value),t=today();if(s){vy=s.y;vm=s.m}else{vy=Math.max(LO,Math.min(HI,t.y+(el._dy||0)));vm=t.m}
+render();var b=(el.closest(".f")||el).getBoundingClientRect();pop.style.display="block";
+var w=pop.offsetWidth,h=pop.offsetHeight,l=Math.min(b.left+scrollX,scrollX+document.documentElement.clientWidth-w-8),tp=b.bottom+scrollY+4;
+if(b.bottom+h+8>innerHeight&&b.top>h+8)tp=b.top+scrollY-h-4;
+pop.style.left=Math.max(8,l)+"px";pop.style.top=tp+"px"}
+window.attachCal=function(id,dy){var el=$(id);el._dy=dy||0;(el.closest(".f")||el).addEventListener("click",function(){open(el)});
+el.addEventListener("input",function(){if(cur===el){if(D(el.value)){close();return}render()}})}
+})();
+attachCal("dob");attachCal("join");attachCal("last");
+</script></body></html>
