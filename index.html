@@ -85,6 +85,11 @@ input[type="text"]:focus, input[type="date"]:focus { border-color: rgb(211, 84, 
 .cal-g .sel,.cal-g .sel:hover{background:var(--cal);color:#fff}
 .cal-ft{display:flex;justify-content:space-between;margin-top:8px;border-top:1px solid #eee;padding-top:6px}
 .cal-ft button{border:0;background:none;color:var(--cal);font-size:14px;font-weight:700;cursor:pointer;padding:4px 8px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:6px}
+.two.one{grid-template-columns:1fr}
+.col-t{font-weight:bold;color:#d35400;font-size:15px;line-height:1.4;margin-bottom:10px;padding-top:10px;border-top:1px dashed #ccc}
+.two .col+.col{border-left:1px dashed #ccc;padding-left:20px}
+@media(max-width:560px){.two{grid-template-columns:1fr}.two .col+.col{border-left:0;padding-left:0}}
 </style></head><body><div class="calculator-card">
 <div class="top-bar"><a href="https://manik-rmch.github.io/dashboard" class="btn-home"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3 2 12h3v8h5v-6h4v6h5v-8h3z"/></svg> হোম</a></div>
 <div class="header-section"><h1>শ্রান্তি বিনোদন ছুটি ক্যালকুলেটর</h1><p class="subtitle">প্রতি ৩ বছর অন্তর ছুটি ও ভাতার প্রাপ্যতার তারিখ, অবসর পর্যন্ত</p></div>
@@ -132,12 +137,11 @@ if(b===false||j===false||ls===false){m.textContent=BADD;return}if(!b||!j)return;
 if($("last").value&&ls===null){m.textContent="সর্বশেষ ছুটির তারিখ পুরো লিখুন, অথবা ঘরটি ফাঁকা রাখুন।";return}
 if(key(j)<key(addY(b,18))){m.textContent="যোগদানের তারিখ জন্মতারিখ থেকে কমপক্ষে ১৮ বছর পরে হতে হবে।";return}
 if(ls&&key(ls)<key(j)){m.textContent="সর্বশেষ ছুটির তারিখ যোগদানের তারিখের আগে হতে পারে না।";return}
-var ret=prev(addY(b,59)),base=ls||j,rows=[],i,dt;
-for(i=1;;i++){dt=addY(base,3*i);if(key(dt)>key(ret))break;rows.push(dt)}
-var h=item("অবসরের তারিখ",fmtD(ret))+item("প্রাপ্য ছুটি",bn(rows.length)+"টি");
-if(rows.length){h+='<div class="section-divider">প্রাপ্যতার তারিখসমূহ</div>';
-rows.forEach(function(r,i){h+='<div class="result-item"><strong>'+bn(i+1)+' নম্বর ছুটি:</strong> '+fmtD(r)+'</div>'})}
-else h+=item("মন্তব্য","অবসরের আগে আর কোনো ছুটি প্রাপ্য হচ্ছে না");
+var ret=prev(addY(b,59));
+function lst(s){var r=[],i,d;for(i=1;;i++){d=addY(s,3*i);if(key(d)>key(ret))break;r.push(d)}return r}
+function col(t,r){var o='<div class="col"><div class="col-t">'+t+'</div><div class="result-item"><strong>প্রাপ্য ছুটি:</strong> '+bn(r.length)+'টি</div>';
+if(r.length)r.forEach(function(x,i){o+='<div class="result-item"><strong>'+bn(i+1)+' নম্বর ছুটি:</strong> '+fmtD(x)+'</div>'});else o+='<div class="result-item">অবসরের আগে আর কোনো ছুটি প্রাপ্য নয়</div>';return o+'</div>'}
+var h=item("অবসরের তারিখ",fmtD(ret))+'<div class="two'+(ls?'':' one')+'">'+col("সমগ্র চাকরি জীবনে (যোগদানের তারিখ হতে)",lst(j))+(ls?col("সর্বশেষ ছুটির প্রাপ্যতার তারিখ ("+fmtD(ls)+") হতে পরবর্তী",lst(ls)):"")+'</div>';
 $("outputContent").innerHTML=h;box.classList.add("show")}
 ["dob","join","last"].forEach(function(i){onDate(i,run)});boxClick();run();
 window.attachCal=function(){};
